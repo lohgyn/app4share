@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\default}" th:with="currentPage='home'">
+
+<head>
+  <title>Sun Life Malaysia - App4Share</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="row">
+      <h1 class="text-center display-1 text-warning" th:text="${statusCode}"></h1>
+      <p class="text-center display-4" th:text="${reason}"></p>
+    </div>
+  </div>
+</body>
+
+</html>

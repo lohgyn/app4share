@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Bootstrap Toasts</title>
+</head>
+
+<body>
+    <div th:fragment="error-toast" id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+          <div th:replace="~{fragments/bootstrap-icons :: bi-emoji-dizzy('24', '24')}"></div>
+          <strong class="mx-1 me-auto">An error occrured</strong>
+          <small id="time-ago"></small>
+        </div>
+        <div class="toast-body"><span th:text="${error}"></span></div>
+    </div>
+</body>
+
+</html>

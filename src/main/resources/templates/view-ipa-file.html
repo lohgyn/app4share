@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\default}" th:with="currentPage='ipa'">
+
+<head>
+  <title>Sun Life Malaysia - Share IPA</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+      <h1><a th:href="@{/ipa}">IPA Files (iOS)</a> > <span th:text="${ipaFile.id + ' - ' + ipaFile.provisionAppIdName}" /></h1>
+      <img width="100" height="100" alt="IPA Icon" th:src="@{/ipa/} + ${ipaFile.fileUuid} + '/icon'" class="rounded">
+    </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <img alt="QR Code" th:src="@{/ipa/} + ${ipaFile.fileUuid} + '/qr-code'" class="border mb-2">
+        <div><b>App Version: </b><span th:text="${ipaFile.appVersion}" /></div>
+        <div><b>App Build: </b><span th:text="${ipaFile.appBuild}" /></div>
+        <div><b>App Size: </b><span th:text="${#numbers.formatDecimal(ipaFile.fileSize / 1024.00 / 1024.00, 0, 2) + 'MB' }" /></div>
+        <div><b>Uploaded Date: </b><span th:text="${ipaFile.createdDate}" /></div>
+        <div class="mb-2"><b>Expiration Date: </b><span th:text="${ipaFile.provisionExpirationDate}" /></div>
+        <a th:href="${ipaFile.downloadUri}" class="btn btn-primary btn-lg">Install</a>
+      </div>
+    </div>
+    <div th:if="${ipaFile.base64ReleaseNotes != null}">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div id="releaseNotes" class="card-text placeholder-glow"><span class="placeholder text-break" th:text="${ipaFile.base64ReleaseNotes}"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title"><b>App Details</b></h2>
+            <div><b>App Name: </b><span th:text="${ipaFile.appName}" /></div>
+            <div><b>Bundle ID: </b><span th:text="${ipaFile.bundleId}" /></div>
+            <div><b>Bundle Executable: </b><span th:text="${ipaFile.bundleExecutable}" /></div>
+            <div><b>App Display Name: </b><span th:text="${ipaFile.appDisplayName}" /></div>
+            <div><b>App Version: </b><span th:text="${ipaFile.appVersion}" /></div>
+            <div><b>App Build: </b><span th:text="${ipaFile.appBuild}" /></div>
+            <div><b>Required Device Capabilities: </b><span th:text="${ipaFile.capabilities}" /></div>
+            <div><b>Supported Platforms: </b><span th:text="${ipaFile.supportedPlatforms}" /></div>
+            <div><b>Minimum Version Required: </b><span th:text="${ipaFile.minimumVersionRequired}" /></div>
+            <div><b>Device Family: </b><span th:text="${ipaFile.deviceFamily}" /></div>
+            <div><b>App Size: </b><span th:text="${#numbers.formatDecimal(ipaFile.fileSize / 1024.00 / 1024.00, 0, 2) + 'MB' }" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title"><b>Provision Details</b></h2>
+            <div><b>App ID Name: </b><span th:text="${ipaFile.provisionAppIdName}" /></div>
+            <div><b>Name: </b><span th:text="${ipaFile.provisionName}" /></div>
+            <div><b>Team: </b><span th:text="${ipaFile.provisionTeamName}" /></div>
+            <div><b>UUID: </b><span th:text="${ipaFile.provisionUuid}" /></div>
+            <div><b>Platforms: </b><span th:text="${ipaFile.provisionPlatform}" /></div>
+            <div><b>Creation Date: </b><span th:text="${ipaFile.provisionCreationDate}" /></div>
+            <div><b>Expiration Date: </b><span th:text="${ipaFile.provisionExpirationDate}" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2>Full Metadata (App)</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle" aria-describedby="ipa-app-info table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Property Name</th>
+            <th scope="col">Property Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="appInfo: ${ipaFile.ipaAppInfos}">
+            <td th:text="${appInfo.key}" />
+            <td class="text-break w-75" th:text="${appInfo.value}" />
+          </tr>
+        </tbody>
+      </table>
+      <span id="icon-circle-fill" th:insert="~{fragments/bootstrap-icons :: bi-circle-fill('16', '16')}" class="d-none"></span>
+    </div>
+
+    <hr>
+    <h2>Full Metadata (Provision)</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle" aria-describedby="ipa-provision-info table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Property Name</th>
+            <th scope="col">Property Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="provisionInfo: ${ipaFile.ipaProvisionInfos}">
+            <td th:text="${provisionInfo.key}" />
+            <td class="text-break" th:text="${provisionInfo.value}" />
+          </tr>
+        </tbody>
+      </table>
+      <span id="icon-circle-fill" th:insert="~{fragments/bootstrap-icons :: bi-circle-fill('16', '16')}" class="d-none"></span>
+    </div>
+
+  </div>
+  <th:block th:if="${ipaFile.base64ReleaseNotes != null}" layout:fragment="script">
+    <script th:inline="javascript">
+
+      let releaseNotes = document.getElementById("releaseNotes");
+      let converter = new showdown.Converter();
+
+      let text = new TextDecoder().decode(base64ToBytes(releaseNotes.innerText));
+      releaseNotes.innerHTML = converter.makeHtml(text)
+
+      function base64ToBytes(base64) {
+        const binString = atob(base64);
+        return Uint8Array.from(binString, (m) => m.codePointAt(0));
+      }
+    </script>
+  </th:block>
+
+</body>
+
+</html>

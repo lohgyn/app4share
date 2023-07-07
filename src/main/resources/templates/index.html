@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\default}" th:with="currentPage='home'">
+
+<head>
+  <title>Sun Life Malaysia - App4Share</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-body">
+            <span th:insert="~{fragments/bootstrap-icons :: bi-apple('48', '48')}" class="d-block mb-2"></span>
+            <h5 class="card-title">Share IPA (iOS)</h5>
+            <p class="card-text">Distribution of In-house Apps Over The Air Installation for <b>iOS</b></p>
+            <a th:href="@{/ipa}" class="btn btn-primary">Explore</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-body">
+            <span th:insert="~{fragments/bootstrap-icons :: bi-android('48', '48')}" class="d-block mb-2"></span>
+            <h5 class="card-title">Share APK (Android)</h5>
+            <p class="card-text">Distribution of In-house Apps for <b>Android</b></p>
+            <a th:href="@{/apk}" class="btn btn-primary">Explore</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
