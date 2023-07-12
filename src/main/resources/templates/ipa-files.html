@@ -35,7 +35,7 @@
         <tbody>
           <tr th:each="ipa: ${ipaFiles}">
             <td>
-              <a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.provisionAppIdName}"></span></a>
+              <a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.appName}"></span></a>
             </td>
             <td th:text="${ipa.bundleId}" />
             <td th:text="${ipa.appVersion}" />
@@ -47,15 +47,15 @@
             <td class="text-center">
               <div class="btn-group" role="group" aria-label="Action Group">
                 <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${ipa.id}"
-                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}">
+                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.appName}">
                   <span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span>
                 </button>
                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${ipa.id}" th:data-bs-file-uuid="${ipa.fileUuid}"
-                  th:data-bs-app-name="${ipa.provisionAppIdName}" th:data-bs-app-version="${ipa.appVersion}" th:data-bs-app-build="${ipa.appBuild}" th:data-bs-href="${ipa.downloadUri}">
+                  th:data-bs-app-name="${ipa.appName}" th:data-bs-app-version="${ipa.appVersion}" th:data-bs-app-build="${ipa.appBuild}" th:data-bs-href="${ipa.downloadUri}">
                   <span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span>
                 </button>
                 <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${ipa.id}"
-                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}">
+                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.appName}">
                   <span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span>
                 </button>
               </div>

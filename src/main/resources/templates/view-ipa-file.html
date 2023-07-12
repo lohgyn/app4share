@@ -8,7 +8,7 @@
 <body>
   <div layout:fragment="content">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-      <h1><a th:href="@{/ipa}">IPA Files (iOS)</a> > <span th:text="${ipaFile.id + ' - ' + ipaFile.provisionAppIdName}" /></h1>
+      <h1><a th:href="@{/ipa}">IPA Files (iOS)</a> > <span th:text="${ipaFile.id + ' - ' + ipaFile.appName}" /></h1>
       <img width="100" height="100" alt="IPA Icon" th:src="@{/ipa/} + ${ipaFile.fileUuid} + '/icon'" class="rounded">
     </div>
     <div class="card mb-3">
