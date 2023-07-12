@@ -1,7 +1,7 @@
 package com.sunlifemalaysia.app4share.model.dto;
 
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotEmpty;
 
-public record PasswordDto(@Nonnull String password, @Nonnull String newPassword, @Nonnull String confirmPassword) {
+public record PasswordDto(@NotEmpty String password, @NotEmpty String newPassword, @NotEmpty String confirmPassword) {
 
 }

@@ -30,7 +30,7 @@ public class ProfileController {
         return "profile";
     }
 
-    @PostMapping(params = { "password", "newPassword", "oldPassword" })
+    @PostMapping(params = { "password", "newPassword", "confirmPassword" })
     public String updateProfilePassword(RedirectAttributes redirectAttributes, Authentication authentication,
             @Valid PasswordDto passwordDto) {
 
