@@ -3,33 +3,40 @@
 
 <head>
   <title>Sun Life Malaysia - Share IPA</title>
+  <th:block layout:fragment="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" integrity="sha512-CcTkIsZd9q6wsVUGBewW5P1uXFcuI6mAsjEn+T+TJKLebXneMQPj1GpwU9O/dkajlHJj/40UBugBAcWN+eFo+g==" />
+  </th:block>
 </head>
 
 <body>
   <div layout:fragment="content">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
       <h1>IPA Files (iOS)</h1>
-      <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ipaFileModal" data-bs-title="Upload New IPA file" data-bs-submit="Upload IPA File">
+      <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ipaFileModal" data-bs-title="Upload New IPA file"
+        data-bs-submit="Upload IPA File">
         Upload New IPA File
       </button>
     </div>
     <div class="table-responsive">
-      <table class="table table-striped table-hover align-middle" aria-describedby="ipa table">
+      <table class="table table-striped table-hover align-middle" aria-describedby="ipa table" data-toggle="table" data-pagination="true" data-search="true">
         <thead>
           <tr>
-            <th scope="col">App</th>
-            <th scope="col">Bundle ID</th>
-            <th scope="col">App Version</th>
-            <th scope="col">App Build</th>
-            <th scope="col">Device Family</th>
-            <th scope="col">Expiration Date</th>
-            <th scope="col">Upload Date</th>
-            <th scope="col">App Size</th>
+            <th scope="col" data-sortable="true">App</th>
+            <th scope="col" data-sortable="true">Bundle ID</th>
+            <th scope="col" data-sortable="true">App Version</th>
+            <th scope="col" data-sortable="true">App Build</th>
+            <th scope="col" data-sortable="true">Device Family</th>
+            <th scope="col" data-sortable="true">Expiration Date</th>
+            <th scope="col" data-sortable="true">Upload Date</th>
+            <th scope="col" data-sortable="true">App Size</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="ipa: ${ipaFiles}">
-            <td><a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.provisionAppIdName}"></span></a></td>
+            <td>
+              <a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.provisionAppIdName}"></span></a>
+            </td>
             <td th:text="${ipa.bundleId}" />
             <td th:text="${ipa.appVersion}" />
             <td th:text="${ipa.appBuild}" />
@@ -39,9 +46,18 @@
             <td th:text="${#numbers.formatDecimal(ipa.fileSize / 1024.00 / 1024.00, 0, 2) + 'MB' }" />
             <td class="text-center">
               <div class="btn-group" role="group" aria-label="Action Group">
-                <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${ipa.id}" th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}"><span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span></button>
-                <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${ipa.id}" th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}" th:data-bs-app-version="${ipa.appVersion}" th:data-bs-app-build="${ipa.appBuild}" th:data-bs-href="${ipa.downloadUri}"><span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span></button>
-                <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${ipa.id}" th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}"><span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span></button>
+                <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${ipa.id}"
+                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}">
+                  <span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span>
+                </button>
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${ipa.id}" th:data-bs-file-uuid="${ipa.fileUuid}"
+                  th:data-bs-app-name="${ipa.provisionAppIdName}" th:data-bs-app-version="${ipa.appVersion}" th:data-bs-app-build="${ipa.appBuild}" th:data-bs-href="${ipa.downloadUri}">
+                  <span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span>
+                </button>
+                <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${ipa.id}"
+                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.provisionAppIdName}">
+                  <span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span>
+                </button>
               </div>
             </td>
           </tr>
@@ -64,7 +80,9 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
               <button type="submit" class="btn btn-primary">Upload</button>
             </div>
           </div>
@@ -77,7 +95,9 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="releaseNotesModalLabel">Upload Release Notes</h1>
+              <h1 class="modal-title fs-5" id="releaseNotesModalLabel">
+                Upload Release Notes
+              </h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -87,9 +107,13 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Upload Release Notes</button>
-              <input type="hidden" name="fileUuid">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Upload Release Notes
+              </button>
+              <input type="hidden" name="fileUuid" />
             </div>
           </div>
         </div>
@@ -106,14 +130,16 @@
       <div class="body-content">
         <div class="d-flex justify-content-center align-items-center">
           <div class="flex-shrink-0">
-            <img alt="QR Code" src="">
+            <img alt="QR Code" src="" />
           </div>
           <div class="flex-grow-1 ms-3">
             <h1 class="app-name"></h1>
-            <h6 class="d-inline">App Version: </h6><span class="app-version"></span>
-            <br>
-            <h6 class="d-inline">App Build: </h6><span class="app-build"></span>
-            <br>
+            <h6 class="d-inline">App Version:</h6>
+            <span class="app-version"></span>
+            <br />
+            <h6 class="d-inline">App Build:</h6>
+            <span class="app-build"></span>
+            <br />
             <a class="btn btn-primary btn-lg mt-2" href="#">Install</a>
           </div>
         </div>
@@ -122,28 +148,32 @@
   </div>
 
   <th:block layout:fragment="script">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap-table.min.js}" integrity="sha512-lsdhisF0ecOfmcKWuClZj9aIMVQe8x8FuoFT2PGqNmoObSYQ2p304H4vSL45ZAX6+fLDCqtepKYzGl+kP+L9EQ=="></script>
     <script th:inline="javascript">
       const baseUrl = /*[[@{'/ipa'}]]*/ "/";
 
       // toast
       const errorToast = document.getElementById("errorToast");
       const toast = new bootstrap.Toast(errorToast);
-      errorToast.addEventListener('show.bs.toast', () => {
+      errorToast.addEventListener("show.bs.toast", () => {
         let now = new Date();
         errorToast.querySelector("#time-ago").textContent = timeAgo(now);
-      })
+      });
 
       // modal (upload ipa)
-      const ipaModal = document.getElementById('ipaFileModal');
-      const ipaModalTitle = ipaModal.querySelector('.modal-title');
-      const ipaModalSubmitButton = ipaModal.querySelector('.modal-footer button[type="submit"]');
+      const ipaModal = document.getElementById("ipaFileModal");
+      const ipaModalTitle = ipaModal.querySelector(".modal-title");
+      const ipaModalSubmitButton = ipaModal.querySelector(
+        '.modal-footer button[type="submit"]'
+      );
 
       ipaModal.parentElement.addEventListener("submit", () => {
         ipaModalSubmitButton.disabled = true;
-        ipaModalSubmitButton.textContent = "Uploading..."
-      })
+        ipaModalSubmitButton.textContent = "Uploading...";
+      });
 
-      ipaModal.addEventListener('show.bs.modal', event => {
+      ipaModal.addEventListener("show.bs.modal", (event) => {
         // Button that triggered the modal
         const button = event.relatedTarget;
 
@@ -153,31 +183,40 @@
 
         ipaModalTitle.textContent = `${modalTitle}`;
         ipaModalSubmitButton.textContent = modalSubmitButtonText;
-      })
+      });
 
       // modal (upload release notes)
-      const releaseNotesModal = document.getElementById('releaseNotesModal');
-      const releaseNotesModalSubmitButton = releaseNotesModal.querySelector('.modal-footer button[type="submit"]');
-      const releaseNotesFileUuidInput = releaseNotesModal.querySelector('input[name="fileUuid"]');
-      releaseNotesModal.addEventListener('show.bs.modal', event => {
+      const releaseNotesModal = document.getElementById("releaseNotesModal");
+      const releaseNotesModalSubmitButton = releaseNotesModal.querySelector(
+        '.modal-footer button[type="submit"]'
+      );
+      const releaseNotesFileUuidInput = releaseNotesModal.querySelector(
+        'input[name="fileUuid"]'
+      );
+      releaseNotesModal.addEventListener("show.bs.modal", (event) => {
         // Button that triggered the modal
         const button = event.relatedTarget;
 
         // Extract info from data-bs-* attributes
         releaseNotesFileUuidInput.value = button.dataset.bsFileUuid;
-      })
-
+      });
 
       // modal (QR code)
-      const qrCodeModal = document.getElementById('qrCodeModal');
-      const qrCodeModalTitle = qrCodeModal.querySelector('.modal-title');
-      const qrCodeModalAppName = qrCodeModal.querySelector('.modal-body .app-name');
-      const qrCodeModalAppVersion = qrCodeModal.querySelector('.modal-body .app-version');
-      const qrCodeModalAppBuild = qrCodeModal.querySelector('.modal-body .app-build');
-      const qrCodeModalLink = qrCodeModal.querySelector('.modal-body a');
-      const qrCodeModalImg = qrCodeModal.querySelector('.modal-body img');
+      const qrCodeModal = document.getElementById("qrCodeModal");
+      const qrCodeModalTitle = qrCodeModal.querySelector(".modal-title");
+      const qrCodeModalAppName = qrCodeModal.querySelector(
+        ".modal-body .app-name"
+      );
+      const qrCodeModalAppVersion = qrCodeModal.querySelector(
+        ".modal-body .app-version"
+      );
+      const qrCodeModalAppBuild = qrCodeModal.querySelector(
+        ".modal-body .app-build"
+      );
+      const qrCodeModalLink = qrCodeModal.querySelector(".modal-body a");
+      const qrCodeModalImg = qrCodeModal.querySelector(".modal-body img");
 
-      qrCodeModal.addEventListener('show.bs.modal', event => {
+      qrCodeModal.addEventListener("show.bs.modal", (event) => {
         // Button that triggered the modal
         const button = event.relatedTarget;
 
@@ -194,15 +233,17 @@
         qrCodeModalAppBuild.textContent = appBuild;
         qrCodeModalImg.src = `${baseUrl}/${fileUuid}/qr-code`;
         qrCodeModalLink.href = `${href}`;
-      })
+      });
 
       // modal (delete)
-      const deleteModal = document.getElementById('deleteModal');
-      const deleteModalTitle = deleteModal.querySelector('.modal-title');
-      const deleteModalBody = deleteModal.querySelector('.modal-body');
-      const deleteModalButton = deleteModal.querySelector('.modal-footer button.btn-danger');
+      const deleteModal = document.getElementById("deleteModal");
+      const deleteModalTitle = deleteModal.querySelector(".modal-title");
+      const deleteModalBody = deleteModal.querySelector(".modal-body");
+      const deleteModalButton = deleteModal.querySelector(
+        ".modal-footer button.btn-danger"
+      );
 
-      deleteModal.addEventListener('show.bs.modal', event => {
+      deleteModal.addEventListener("show.bs.modal", (event) => {
         // Button that triggered the modal
         const button = event.relatedTarget;
 
@@ -214,22 +255,24 @@
         deleteModalTitle.textContent = `Delete IPA File (${id} - ${appName})`;
         deleteModalBody.textContent = `Are you sure you want to delete this record?`;
         deleteModalButton.value = fileUuid;
-      })
+      });
 
-      deleteModalButton.addEventListener('click', event => {
+      deleteModalButton.addEventListener("click", (event) => {
         deleteModalButton.disabled = true;
         const formData = new FormData();
 
-        formData.append('fileUuid', deleteModalButton.value);
+        formData.append("fileUuid", deleteModalButton.value);
 
         fetch(baseUrl, {
-          method: 'DELETE',
+          method: "DELETE",
           body: formData,
-          headers: headerWithCsrf()
+          headers: headerWithCsrf(),
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error('Unable to delete the IPA File. Please check the logs.');
+              throw new Error(
+                "Unable to delete the IPA File. Please check the logs."
+              );
             }
             return response.json();
           })
@@ -241,15 +284,12 @@
             errorToast.querySelector(".toast-body").textContent = error;
             toast.show();
           });
-      })
-
+      });
     </script>
     <script th:if="${error != null}">
-
       setTimeout(() => {
         toast.show();
       }, 1);
-
     </script>
   </th:block>
 </body>

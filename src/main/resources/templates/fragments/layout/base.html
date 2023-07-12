@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  th:data-bs-theme="${#authorization.expression('isAuthenticated()')} ? (${#authentication.principal.darkMode} ? 'dark' : 'white') : 'white'">
 
 <head>
   <meta charset="utf-8" />

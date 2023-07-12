@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\base}" th:with="currentPage='home'">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\base}" th:with="currentPage='profile'">
 
 <head>
   <title>Sun Life Malaysia - Profile</title>
@@ -13,70 +13,62 @@
     <aside class="bd-aside sticky-xl-top text-body-secondary align-self-start mb-3 mb-xl-5 px-2">
       <h2 class="h6 pt-4 pb-3 mb-4 border-bottom">On this page</h2>
       <nav class="small">
-        <ul class="list-unstyled">
-          <li class="my-2">
-            <button class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse" aria-controls="contents-collapse">Profile</button>
-            <ul class="list-unstyled ps-3 collapse" id="contents-collapse">
-              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#info">Personal Info</a></li>
-              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#security">Security</a></li>
-            </ul>
-          </li>
+        <ul class="list-unstyled ps-3" id="contents-collapse">
+          <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#info">Personal Info</a></li>
+          <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#security">Security</a></li>
+          <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#settings">Settings</a></li>
         </ul>
       </nav>
     </aside>
-    <div class="bd-cheatsheet container-fluid bg-body">
+    <div class="bd-profile container-fluid bg-body">
       <section id="content">
         <article class="my-3" id="info">
           <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
             <h3>Personal Info</h3>
           </div>
 
-          <div class="card mt-3">
-            <div class="card-body">
-              <table class="table table-borderless mb-0" aria-describedby="info">
-                <tbody>
-                  <tr>
-                    <th scope="row">User name</th>
-                    <td>
-                      <div sec:authentication="name"></div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">User roles</th>
-                    <td>
-                      <div th:each="authority : ${#authentication.getAuthorities()}" th:if="${authority.getAuthority().startsWith('ROLE_')}" th:text="${authority.getAuthority().replaceFirst('ROLE_', '')}">
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Created by</th>
-                    <td>
-                      <div sec:authentication="principal.createdBy"></div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Created on</th>
-                    <td>
-                      <div sec:authentication="principal.createdDate"></div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Last modified by</th>
-                    <td>
-                      <div sec:authentication="principal.lastModifiedBy"></div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Last modified on</th>
-                    <td>
-                      <div sec:authentication="principal.lastModifiedDate"></div>
-                    </td>
-                  </tr>
+          <table class="table table-bordered mb-0 mt-4" aria-describedby="info">
+            <tbody>
+              <tr>
+                <th scope="row">User name</th>
+                <td>
+                  <div sec:authentication="name"></div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">User roles</th>
+                <td>
+                  <div th:each="authority : ${#authentication.getAuthorities()}" th:if="${authority.getAuthority().startsWith('ROLE_')}" th:text="${authority.getAuthority().replaceFirst('ROLE_', '')}">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Created by</th>
+                <td>
+                  <div sec:authentication="principal.createdBy"></div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Created on</th>
+                <td>
+                  <div sec:authentication="principal.createdDate"></div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Last modified by</th>
+                <td>
+                  <div sec:authentication="principal.lastModifiedBy"></div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Last modified on</th>
+                <td>
+                  <div sec:authentication="principal.lastModifiedDate"></div>
+                </td>
+              </tr>
 
-                </tbody>
-              </table>
-            </div>
-          </div>
+            </tbody>
+          </table>
         </article>
         <article class="my-3" id="security">
           <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
@@ -88,7 +80,6 @@
               <div th:if="${message}" class="alert alert-success">
                 <span th:text="${message}">Message</span>
               </div>
-
 
               <div th:if="${error}" class="alert alert-danger">
                 <span th:text="${error}">Error</span>
@@ -108,6 +99,27 @@
                   <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Change Password</button>
+              </form>
+            </div>
+          </div>
+
+        </article>
+        <article class="my-3" id="settings">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+            <h3>Settings</h3>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+
+              <form th:action="@{/profile}" method="post">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="darkMode" th:checked="${#authentication.principal.darkMode}" name="darkMode">
+                  <label class="form-check-label" for="darkMode">
+                    Enable Dark Mode
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Update Settings</button>
               </form>
             </div>
           </div>

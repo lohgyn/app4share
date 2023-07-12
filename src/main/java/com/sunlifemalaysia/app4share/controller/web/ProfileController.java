@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sunlifemalaysia.app4share.exception.PasswordException;
@@ -29,8 +30,8 @@ public class ProfileController {
         return "profile";
     }
 
-    @PostMapping
-    public String updateProfile(RedirectAttributes redirectAttributes, Authentication authentication,
+    @PostMapping(params = { "password", "newPassword", "oldPassword" })
+    public String updateProfilePassword(RedirectAttributes redirectAttributes, Authentication authentication,
             @Valid PasswordDto passwordDto) {
 
         if (authentication.getPrincipal() instanceof UserDetails userDetails) {
@@ -44,6 +45,17 @@ public class ProfileController {
 
             }
 
+        }
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping
+    public String updateProfileSettings(RedirectAttributes redirectAttributes, Authentication authentication,
+            @RequestParam(required = false) Boolean darkMode) {
+
+        if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+            userAccountService.setDarkMode(userDetails, darkMode);
         }
 
         return "redirect:/profile";

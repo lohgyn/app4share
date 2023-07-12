@@ -8,4 +8,6 @@ import com.sunlifemalaysia.app4share.model.dto.PasswordDto;
 public interface UserAccountService {
 
     public UserDetails changePassword(UserDetails userDetails, PasswordDto passwordDto) throws PasswordException;
+
+    public UserDetails setDarkMode(UserDetails userDetails, Boolean darkMode);
 }

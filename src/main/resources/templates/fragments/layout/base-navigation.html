@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <header th:fragment="navigation" class="navbar navbar-expand-md sticky-top bg-white flex-md-nowrap shadow">
+    <header th:fragment="navigation" class="navbar navbar-expand-md sticky-top flex-md-nowrap shadow bg-body">
         <div class="container-fluid">
             <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" th:href="@{/}"><img th:src="@{/img/sunlife-logo.svg}" alt="Sun Life Malaysia" width="130" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="true" aria-label="Toggle navigation">
@@ -28,10 +28,10 @@
                 <div sec:authorize="isAuthenticated()" class="flex-shrink-0 dropdown-center">
                     <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle show" data-bs-toggle="dropdown" aria-expanded="true">
                         <span th:insert="~{fragments/bootstrap-icons :: bi-person('32', '32')}" class="rounded-circle"></span>
-                        <span sec:authentication="name" class="text-dark"></span>
+                        <span sec:authentication="name"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-md-end text-small shadow">
-                        <li> <a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
+                        <li><a class="dropdown-item" th:classappend="${currentPage == 'profile'} ? 'active'" th:href="@{/profile}">Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

@@ -11,6 +11,7 @@ CREATE TABLE [dbo].[user_account](
     [username] [varchar](255) UNIQUE NOT NULL,
     [password] [varchar](255) NULL,
     [account_non_locked] [bit] NULL,
+    [dark_mode] [bit] NULL,
     [created_by] [varchar](255) NULL,
     [created_date] [datetime2](6) NULL,
     [last_modified_by] [varchar](255) NULL,

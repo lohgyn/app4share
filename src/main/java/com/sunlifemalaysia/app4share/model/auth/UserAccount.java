@@ -34,6 +34,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
 
     private String password;
     private boolean accountNonLocked;
+    private boolean darkMode;
 
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -93,4 +94,13 @@ public class UserAccount extends BaseEntity implements UserDetails {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    public boolean isDarkMode() {
+        return darkMode;
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        this.darkMode = darkMode;
+    }
+
 }

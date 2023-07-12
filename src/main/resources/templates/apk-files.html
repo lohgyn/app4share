@@ -3,6 +3,9 @@
 
 <head>
   <title>Sun Life Malaysia - Share APK</title>
+  <th:block layout:fragment="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" integrity="sha512-CcTkIsZd9q6wsVUGBewW5P1uXFcuI6mAsjEn+T+TJKLebXneMQPj1GpwU9O/dkajlHJj/40UBugBAcWN+eFo+g==" />
+  </th:block>
 </head>
 
 <body>
@@ -14,17 +17,18 @@
       </button>
     </div>
     <div class="table-responsive">
-      <table class="table table-striped table-hover align-middle" aria-describedby="apk table">
+      <table class="table table-striped table-hover align-middle" aria-describedby="apk table" data-toggle="table" data-pagination="true" data-search="true">
         <thead>
           <tr>
-            <th scope="col">App</th>
-            <th scope="col">Package</th>
-            <th scope="col">App Version</th>
-            <th scope="col">App Build</th>
-            <th scope="col">Minimum SDK Version</th>
-            <th scope="col">Target SDK Version</th>
-            <th scope="col">Upload Date</th>
-            <th scope="col">App Size</th>
+            <th scope="col" data-sortable="true">App</th>
+            <th scope="col" data-sortable="true">Package</th>
+            <th scope="col" data-sortable="true">App Version</th>
+            <th scope="col" data-sortable="true">App Build</th>
+            <th scope="col" data-sortable="true">Minimum SDK Version</th>
+            <th scope="col" data-sortable="true">Target SDK Version</th>
+            <th scope="col" data-sortable="true">Upload Date</th>
+            <th scope="col" data-sortable="true">App Size</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -40,7 +44,7 @@
             <td class="text-center">
               <div class="btn-group" role="group" aria-label="Action Group">
                 <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span></button>
-                <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}" th:data-bs-app-version="${apk.versionName}" th:data-bs-app-build="${apk.versionCode}" th:data-bs-href="${apk.downloadUri}"><span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span></button>
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}" th:data-bs-app-version="${apk.versionName}" th:data-bs-app-build="${apk.versionCode}" th:data-bs-href="${apk.downloadUri}"><span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span></button>
                 <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span></button>
               </div>
             </td>
@@ -123,6 +127,8 @@
   </div>
 
   <th:block layout:fragment="script">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap-table.min.js}" integrity="sha512-lsdhisF0ecOfmcKWuClZj9aIMVQe8x8FuoFT2PGqNmoObSYQ2p304H4vSL45ZAX6+fLDCqtepKYzGl+kP+L9EQ=="></script>
     <script th:inline="javascript">
       const baseUrl = /*[[@{'/apk'}]]*/ "/";
 
