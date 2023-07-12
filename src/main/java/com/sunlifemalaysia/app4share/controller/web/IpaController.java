@@ -11,6 +11,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -121,6 +122,7 @@ public class IpaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String uploadIpaFile(@RequestParam("file") MultipartFile multipartFile) {
 
         ipaService.uploadIpaFile(multipartFile);
@@ -129,6 +131,7 @@ public class IpaController {
     }
 
     @PostMapping("/release-notes")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String uploadIpaReleaseNotes(@RequestParam("file") MultipartFile multipartFile,
             @RequestParam("fileUuid") String fileUuid) {
 
@@ -139,6 +142,7 @@ public class IpaController {
 
     @ResponseBody
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> deleteIpaFile(String fileUuid) {
 
         ipaService.deleteIpaFile(fileUuid);

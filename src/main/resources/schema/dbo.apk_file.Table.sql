@@ -22,7 +22,9 @@ CREATE TABLE [dbo].[apk_file](
     [base64icon] [text] NULL,
     [base64release_notes] [text] NULL,
     [file_size] [bigint] NULL,
+    [created_by] [varchar](255) NULL,
     [created_date] [datetime2](6) NULL,
+    [last_modified_by] [varchar](255) NULL,
     [last_modified_date] [datetime2](6) NULL
 )
 GO

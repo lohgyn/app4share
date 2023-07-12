@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\container-lg}" th:with="currentPage='home'">
+
+<head>
+  <title>Sun Life Malaysia - Sign in</title>
+  <th:block layout:fragment="stylesheet">
+    <link th:href="@{/css/sign-in.css}" rel="stylesheet" />
+  </th:block>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <main class="form-signin w-100 m-auto">
+      <form th:action="@{/sign-in}" method="post">
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <div th:if="${param.error}" class="alert alert-danger">
+          Invalid username or password.
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="floatingInput" placeholder="Username" name="username">
+          <label for="floatingInput">Username</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+          <label for="floatingPassword">Password</label>
+        </div>
+        <button class="btn btn-primary w-100 py-2 mt-2" type="submit">Sign in</button>
+      </form>
+    </main>
+  </div>
+</body>
+
+</html>

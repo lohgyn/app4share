@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\base}" th:with="currentPage='home'">
+
+<head>
+  <title>Sun Life Malaysia - Profile</title>
+  <th:block layout:fragment="stylesheet">
+    <link th:href="@{/css/profile.css}" rel="stylesheet" />
+  </th:block>
+</head>
+
+<body>
+  <th:block layout:fragment="container">
+    <aside class="bd-aside sticky-xl-top text-body-secondary align-self-start mb-3 mb-xl-5 px-2">
+      <h2 class="h6 pt-4 pb-3 mb-4 border-bottom">On this page</h2>
+      <nav class="small">
+        <ul class="list-unstyled">
+          <li class="my-2">
+            <button class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse" aria-controls="contents-collapse">Profile</button>
+            <ul class="list-unstyled ps-3 collapse" id="contents-collapse">
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#info">Personal Info</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#security">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+    <div class="bd-cheatsheet container-fluid bg-body">
+      <section id="content">
+        <article class="my-3" id="info">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+            <h3>Personal Info</h3>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-body">
+              <table class="table table-borderless mb-0" aria-describedby="info">
+                <tbody>
+                  <tr>
+                    <th scope="row">User name</th>
+                    <td>
+                      <div sec:authentication="name"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">User roles</th>
+                    <td>
+                      <div th:each="authority : ${#authentication.getAuthorities()}" th:if="${authority.getAuthority().startsWith('ROLE_')}" th:text="${authority.getAuthority().replaceFirst('ROLE_', '')}">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Created by</th>
+                    <td>
+                      <div sec:authentication="principal.createdBy"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Created on</th>
+                    <td>
+                      <div sec:authentication="principal.createdDate"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Last modified by</th>
+                    <td>
+                      <div sec:authentication="principal.lastModifiedBy"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Last modified on</th>
+                    <td>
+                      <div sec:authentication="principal.lastModifiedDate"></div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+        <article class="my-3" id="security">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+            <h3>Security</h3>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div th:if="${message}" class="alert alert-success">
+                <span th:text="${message}">Message</span>
+              </div>
+
+
+              <div th:if="${error}" class="alert alert-danger">
+                <span th:text="${error}">Error</span>
+              </div>
+
+              <form th:action="@{/profile}" method="post">
+                <div class="mb-3">
+                  <label for="password" class="form-label">Current Password</label>
+                  <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                  <label for="newPassword" class="form-label">New Password</label>
+                  <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                </div>
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Change Password</button>
+              </form>
+            </div>
+          </div>
+
+        </article>
+      </section>
+    </div>
+  </th:block>
+</body>
+
+</html>

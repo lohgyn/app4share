@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>Sun Life Malaysia</title>
+
+  <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.ico}" />
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/app.css}" rel="stylesheet" />
+  <th:block layout:fragment="stylesheet"></th:block>
+</head>
+
+<body>
+  <th:block th:replace="~{fragments/layout/base-navigation :: navigation}">
+  </th:block>
+
+  <th:block layout:fragment="container">
+    <th:block layout:fragment="content"></th:block>
+  </th:block>
+
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/js/showdown.min.js}"></script>
+  <script th:src="@{/js/time-utils.js}"></script>
+  <script>
+    function headerWithCsrf() {
+      const header = {};
+      header[document.getElementsByName("_csrf_header")[0].getAttribute("content")] = document.getElementsByName("_csrf")[0].getAttribute("content");
+      return header;
+    }
+  </script>
+  <th:block layout:fragment="script"></th:block>
+</body>
+
+</html>

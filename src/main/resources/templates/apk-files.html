@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\default}" th:with="currentPage='apk'">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\container-lg}" th:with="currentPage='apk'">
 
 <head>
   <title>Sun Life Malaysia - Share APK</title>
@@ -9,7 +9,7 @@
   <div layout:fragment="content">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
       <h1>APK Files (Android)</h1>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#apkFileModal" data-bs-title="Upload New APK file" data-bs-submit="Upload APK File">
+      <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#apkFileModal" data-bs-title="Upload New APK file" data-bs-submit="Upload APK File">
         Upload New APK File
       </button>
     </div>
@@ -39,9 +39,9 @@
             <td th:text="${#numbers.formatDecimal(apk.fileSize / 1024.00 / 1024.00, 0, 2) + 'MB' }" />
             <td class="text-center">
               <div class="btn-group" role="group" aria-label="Action Group">
-                <button type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span></button>
+                <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span></button>
                 <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}" th:data-bs-app-version="${apk.versionName}" th:data-bs-app-build="${apk.versionCode}" th:data-bs-href="${apk.downloadUri}"><span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span></button>
-                <button type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span></button>
+                <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span></button>
               </div>
             </td>
           </tr>
@@ -224,7 +224,8 @@
 
         fetch(baseUrl, {
           method: 'DELETE',
-          body: formData
+          body: formData,
+          headers: headerWithCsrf()
         })
           .then((response) => {
             if (!response.ok) {

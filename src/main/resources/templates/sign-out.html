@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments\layout\container-lg}" th:with="currentPage='home'">
+
+<head>
+  <title>Sun Life Malaysia - Sign out</title>
+  <th:block layout:fragment="stylesheet">
+    <link th:href="@{/css/sign-out.css}" rel="stylesheet" />
+  </th:block>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <main class="form-signout w-100 m-auto">
+      <form th:action="@{/sign-out}" method="post">
+        <h1 class="h3 mb-3 text-center fw-normal">Are you sure you want to sign out?</h1>
+        <button class="btn btn-primary w-100 py-2 mt-2" type="submit">Sign out</button>
+      </form>
+    </main>
+  </div>
+</body>
+
+</html>

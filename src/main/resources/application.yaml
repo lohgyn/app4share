@@ -6,9 +6,8 @@ server:
 app:
   uri: http://localhost:${server.port}/${server.servlet.context-path}
   auth:
-    jwt:
-      secret: vk+mpseqHqhOYSD/3QJBku823lgmrZn/YEJgFoOJuPy+Kouy7HsuTPJMv/8Iu6N1
-    users: adminuser
+    secret: $2a$10$So9.Zv5ncf5Ir/IfIZuKUu1/Qb6YF2LrXyLdaCqwitWlCJFfBjHaO
+    username: adminuser
   ipa:
     upload-path: files/ipa
   apk:

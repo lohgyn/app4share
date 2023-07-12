@@ -11,6 +11,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -113,6 +114,7 @@ public class ApkController {
     private static final String REDIRECT_TO_APK_PAGE = "redirect:/apk";
 
     @PostMapping("/release-notes")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String uploadIpaReleaseNotes(@RequestParam("file") MultipartFile multipartFile,
             @RequestParam("fileUuid") String fileUuid) {
 
@@ -122,6 +124,7 @@ public class ApkController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String uploadApkFile(@RequestParam("file") MultipartFile multipartFile) {
 
         apkService.uploadApkFile(multipartFile);
@@ -131,6 +134,7 @@ public class ApkController {
 
     @ResponseBody
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> deleteApkFile(String fileUuid) {
 
         apkService.deleteApkFile(fileUuid);

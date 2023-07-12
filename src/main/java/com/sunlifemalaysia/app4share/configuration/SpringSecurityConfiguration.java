@@ -1,50 +1,38 @@
 package com.sunlifemalaysia.app4share.configuration;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.sunlifemalaysia.app4share.filter.JwtRequestFilter;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class SpringSecurityConfiguration {
 
+	private static final String SIGN_IN_PAGE = "/sign-in";
+	private static final String SIGN_OUT_PAGE = "/sign-out";
+
+	private static final String[] PROTECTED_RESOURCES = { "/profile" };
+
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	AuthenticationManager authenticationManager(
-			final AuthenticationConfiguration authenticationConfiguration) throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}
-
-	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.securityMatcher("/api/**")
-				.authorizeHttpRequests(
-						authorizeHttpRequests -> authorizeHttpRequests.anyRequest().authenticated())
-				.cors(withDefaults())
-				.csrf(csrf -> csrf.disable())
-				.sessionManagement(
-						sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
-				.build();
-	}
+		http.authorizeHttpRequests(requests -> requests
+				.requestMatchers(PROTECTED_RESOURCES).authenticated()
+				.anyRequest().permitAll())
+				.formLogin(login -> login.loginPage(SIGN_IN_PAGE).loginProcessingUrl(SIGN_IN_PAGE))
+				.logout(logout -> logout.logoutUrl(SIGN_OUT_PAGE).logoutSuccessUrl("/"));
 
-	@Bean
-	JwtRequestFilter jwtRequestFilter() {
-		return new JwtRequestFilter();
+		return http.build();
 	}
 
 }
