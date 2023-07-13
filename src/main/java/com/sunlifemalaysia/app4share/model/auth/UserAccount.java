@@ -29,11 +29,23 @@ public class UserAccount extends BaseEntity implements UserDetails {
         this.accountNonLocked = accountNonLocked;
     }
 
+    public UserAccount(String username, String password, boolean accountNonLocked, boolean darkMode) {
+        this.username = username;
+        this.password = password;
+        this.accountNonLocked = accountNonLocked;
+        this.darkMode = darkMode;
+    }
+
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private boolean accountNonLocked;
+
+    @Column(nullable = false)
     private boolean darkMode;
 
     @ManyToMany

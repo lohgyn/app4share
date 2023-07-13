@@ -54,7 +54,7 @@ public class InitializeAdminUserConfiguration implements InitializingBean {
             adminRole = roleOptional.get();
         }
 
-        UserAccount userAccount = new UserAccount(username, secret, true);
+        UserAccount userAccount = new UserAccount(username, secret, true, false);
         userAccount.setRoles(Arrays.asList(adminRole));
         userAccountRepository.save(userAccount);
     }

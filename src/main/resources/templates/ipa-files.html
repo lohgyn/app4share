@@ -4,7 +4,7 @@
 <head>
   <title>Sun Life Malaysia - Share IPA</title>
   <th:block layout:fragment="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" integrity="sha512-CcTkIsZd9q6wsVUGBewW5P1uXFcuI6mAsjEn+T+TJKLebXneMQPj1GpwU9O/dkajlHJj/40UBugBAcWN+eFo+g==" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}"/>
   </th:block>
 </head>
 
@@ -35,7 +35,7 @@
         <tbody>
           <tr th:each="ipa: ${ipaFiles}">
             <td>
-              <a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.appName}"></span></a>
+              <a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.appDisplayName}"></span></a>
             </td>
             <td th:text="${ipa.bundleId}" />
             <td th:text="${ipa.appVersion}" />
@@ -47,15 +47,15 @@
             <td class="text-center">
               <div class="btn-group" role="group" aria-label="Action Group">
                 <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${ipa.id}"
-                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.appName}">
+                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.appDisplayName}">
                   <span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span>
                 </button>
                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#qrCodeModal" th:data-bs-id="${ipa.id}" th:data-bs-file-uuid="${ipa.fileUuid}"
-                  th:data-bs-app-name="${ipa.appName}" th:data-bs-app-version="${ipa.appVersion}" th:data-bs-app-build="${ipa.appBuild}" th:data-bs-href="${ipa.downloadUri}">
+                  th:data-bs-app-name="${ipa.appDisplayName}" th:data-bs-app-version="${ipa.appVersion}" th:data-bs-app-build="${ipa.appBuild}" th:data-bs-href="${ipa.downloadUri}">
                   <span th:insert="~{fragments/bootstrap-icons :: bi-qr-code('24', '24')}"></span>
                 </button>
                 <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-primary" data-bs-toggle="modal" data-bs-target="#releaseNotesModal" th:data-bs-id="${ipa.id}"
-                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.appName}">
+                  th:data-bs-file-uuid="${ipa.fileUuid}" th:data-bs-app-name="${ipa.appDisplayName}">
                   <span th:insert="~{fragments/bootstrap-icons :: bi-cloud-upload('24', '24')}"></span>
                 </button>
               </div>
@@ -149,7 +149,7 @@
 
   <th:block layout:fragment="script">
     <script th:src="@{/js/jquery.min.js}"></script>
-    <script th:src="@{/js/bootstrap-table.min.js}" integrity="sha512-lsdhisF0ecOfmcKWuClZj9aIMVQe8x8FuoFT2PGqNmoObSYQ2p304H4vSL45ZAX6+fLDCqtepKYzGl+kP+L9EQ=="></script>
+    <script th:src="@{/js/bootstrap-table.min.js}"></script>
     <script th:inline="javascript">
       const baseUrl = /*[[@{'/ipa'}]]*/ "/";
 

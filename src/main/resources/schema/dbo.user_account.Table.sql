@@ -9,9 +9,9 @@ GO
 CREATE TABLE [dbo].[user_account](
     [id] [bigint] IDENTITY(1, 1) PRIMARY KEY NOT NULL,
     [username] [varchar](255) UNIQUE NOT NULL,
-    [password] [varchar](255) NULL,
-    [account_non_locked] [bit] NULL,
-    [dark_mode] [bit] NULL,
+    [password] [varchar](255) NOT NULL,
+    [account_non_locked] [bit] NOT NULL,
+    [dark_mode] [bit] NOT NULL,
     [created_by] [varchar](255) NULL,
     [created_date] [datetime2](6) NULL,
     [last_modified_by] [varchar](255) NULL,

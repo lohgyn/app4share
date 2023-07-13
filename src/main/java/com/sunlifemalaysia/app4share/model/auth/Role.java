@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sunlifemalaysia.app4share.model.BaseEntity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 
@@ -19,6 +20,7 @@ public class Role extends BaseEntity implements Serializable {
         this.name = name;
     }
 
+    @Column(nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "roles")
