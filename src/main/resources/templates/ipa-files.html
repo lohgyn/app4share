@@ -20,29 +20,29 @@
     <table class="table table-striped table-hover align-middle" aria-describedby="ipa table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true">
       <thead>
         <tr>
-          <th scope="col" data-sortable="true" data-switchable="false">App</th>
+          <th scope="col" data-sortable="true" data-switchable="false">ID</th>
+          <th scope="col" data-sortable="true" data-switchable="false" data-formatter="appNameFormatter">App</th>
           <th scope="col" data-sortable="true">Bundle ID</th>
           <th scope="col" data-sortable="true">App Version</th>
           <th scope="col" data-sortable="true">App Build</th>
           <th scope="col" data-sortable="true">Device Family</th>
           <th scope="col" data-sortable="true">Expiration Date</th>
           <th scope="col" data-sortable="true">Upload Date</th>
-          <th scope="col" data-sortable="true">App Size</th>
+          <th scope="col" data-sortable="true" data-formatter="fileSizeFormatter">App Size</th>
           <th scope="col" data-searchable="false" data-switchable="false"></th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="ipa: ${ipaFiles}">
-          <td>
-            <a th:href="@{/ipa/} + ${ipa.fileUuid}"><span th:text="${ipa.id + ' - ' + ipa.appDisplayName}"></span></a>
-          </td>
+          <td th:text="${ipa.id}" />
+          <td th:text="${ipa.appDisplayName}" th:data-href="@{/ipa/} + ${ipa.fileUuid}" />
           <td th:text="${ipa.bundleId}" />
           <td th:text="${ipa.appVersion}" />
           <td th:text="${ipa.appBuild}" />
           <td th:text="${ipa.deviceFamily}" />
           <td th:text="${ipa.provisionExpirationDate}" />
           <td th:text="${ipa.createdDate}" />
-          <td th:text="${#numbers.formatDecimal(ipa.fileSize / 1024.00 / 1024.00, 0, 2) + 'MB' }" />
+          <td th:text="${ipa.fileSize}" />
           <td class="text-center">
             <div class="btn-group" role="group" aria-label="Action Group">
               <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${ipa.id}"
@@ -148,6 +148,7 @@
   <th:block layout:fragment="script">
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap-table.min.js}"></script>
+    <script th:src="@{/js/table-utils.js}"></script>
     <script th:inline="javascript">
       const baseUrl = /*[[@{'/ipa'}]]*/ "/";
 

@@ -4,7 +4,7 @@
 <head>
   <title>Sun Life Malaysia - Share APK</title>
   <th:block layout:fragment="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
   </th:block>
 </head>
 
@@ -19,27 +19,29 @@
     <table class="table table-striped table-hover align-middle" aria-describedby="apk table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true">
       <thead>
         <tr>
-          <th scope="col" data-sortable="true" data-switchable="false">App</th>
+          <th scope="col" data-sortable="true" data-switchable="false">ID</th>
+          <th scope="col" data-sortable="true" data-switchable="false" data-formatter="appNameFormatter">App</th>
           <th scope="col" data-sortable="true">Package</th>
           <th scope="col" data-sortable="true">App Version</th>
           <th scope="col" data-sortable="true">App Build</th>
           <th scope="col" data-sortable="true">Minimum SDK Version</th>
           <th scope="col" data-sortable="true">Target SDK Version</th>
           <th scope="col" data-sortable="true">Upload Date</th>
-          <th scope="col" data-sortable="true">App Size</th>
+          <th scope="col" data-sortable="true" data-formatter="fileSizeFormatter">App Size</th>
           <th scope="col" data-searchable="false" data-switchable="false"></th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="apk: ${apkFiles}">
-          <td><a th:href="@{/apk/} + ${apk.fileUuid}"><span th:text="${apk.id + ' - ' + apk.appName}"></span></a></td>
+          <td th:text="${apk.id}" />
+          <td th:text="${apk.appName}" th:data-href="@{/apk/} + ${apk.fileUuid}" />
           <td th:text="${apk.appPackage}" />
           <td th:text="${apk.versionName}" />
           <td th:text="${apk.versionCode}" />
           <td th:text="${apk.compileSdkVersion}" />
           <td th:text="${apk.platformBuildVersionCode}" />
           <td th:text="${apk.createdDate}" />
-          <td th:text="${#numbers.formatDecimal(apk.fileSize / 1024.00 / 1024.00, 0, 2) + 'MB' }" />
+          <td th:text="${apk.fileSize}" />
           <td class="text-center">
             <div class="btn-group" role="group" aria-label="Action Group">
               <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-bs-id="${apk.id}" th:data-bs-file-uuid="${apk.fileUuid}" th:data-bs-app-name="${apk.appName}"><span th:insert="~{fragments/bootstrap-icons :: bi-trash('24', '24')}"></span></button>
@@ -126,7 +128,9 @@
   <th:block layout:fragment="script">
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap-table.min.js}"></script>
+    <script th:src="@{/js/table-utils.js}"></script>
     <script th:inline="javascript">
+
       const baseUrl = /*[[@{'/apk'}]]*/ "/";
 
       // toast

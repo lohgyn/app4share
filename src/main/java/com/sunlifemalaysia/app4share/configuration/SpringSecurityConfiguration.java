@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -26,8 +28,15 @@ public class SpringSecurityConfiguration {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+		RequestMatcher[] matchers = new RequestMatcher[PROTECTED_RESOURCES.length];
+
+		for(int i = 0; i < PROTECTED_RESOURCES.length; i ++) {
+			matchers[i] = new AntPathRequestMatcher(PROTECTED_RESOURCES[i]);
+		}
+
 		http.authorizeHttpRequests(requests -> requests
-				.requestMatchers(PROTECTED_RESOURCES).authenticated()
+				.requestMatchers(matchers).authenticated()
 				.anyRequest().permitAll())
 				.formLogin(login -> login.loginPage(SIGN_IN_PAGE).loginProcessingUrl(SIGN_IN_PAGE))
 				.logout(logout -> logout.logoutUrl(SIGN_OUT_PAGE).logoutSuccessUrl("/"));

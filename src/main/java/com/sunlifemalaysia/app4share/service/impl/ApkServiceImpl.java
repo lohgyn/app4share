@@ -37,17 +37,23 @@ import com.sunlifemalaysia.app4share.repository.ApkFileRepository;
 import com.sunlifemalaysia.app4share.service.ApkService;
 import com.sunlifemalaysia.app4share.service.FileService;
 
-import brut.androlib.AndrolibException;
-import brut.androlib.options.BuildOptions;
-import brut.androlib.res.AndrolibResources;
+import brut.androlib.Config;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.ResourcesDecoder;
 import brut.androlib.res.data.ResPackage;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.data.ResTable;
 import brut.androlib.res.data.ResValuesFile;
 import brut.androlib.res.data.value.ResStringValue;
 import brut.androlib.res.decoder.AXmlResourceParser;
+import brut.androlib.res.decoder.Res9patchStreamDecoder;
 import brut.androlib.res.decoder.ResAttrDecoder;
 import brut.androlib.res.decoder.ResFileDecoder;
+import brut.androlib.res.decoder.ResRawStreamDecoder;
+import brut.androlib.res.decoder.ResStreamDecoderContainer;
+import brut.androlib.res.decoder.XmlPullStreamDecoder;
+import brut.androlib.res.util.ExtMXSerializer;
+import brut.androlib.res.util.ExtXmlSerializer;
 import brut.directory.Directory;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
@@ -133,17 +139,19 @@ public class ApkServiceImpl implements ApkService, FileService {
 
     private ApkFile decodeApkFile(final File tempApkFile) {
 
-        final AndrolibResources androlibResources = new AndrolibResources();
-
         final ExtFile extFile = new ExtFile(tempApkFile);
 
         try {
 
-            final File outDir = new File(extFile.getParentFile().getPath());
-            final ResTable resTable = androlibResources.getResTable(extFile, true);
+            Config config = Config.getDefaultConfig();
+            config.setForceDecodeManifest(Config.FORCE_DECODE_MANIFEST_FULL);
+            config.analysisMode = true;
 
-            androlibResources.buildOptions = new BuildOptions();
-            androlibResources.decodeManifest(resTable, extFile, outDir);
+            final ResourcesDecoder androlibResources = new ResourcesDecoder(config, extFile);
+            final File outDir = new File(extFile.getParentFile().getPath());
+            final ResTable resTable = androlibResources.getResTable();
+
+            androlibResources.decodeManifest(outDir);
 
             final File manifestXml = new File(outDir, ANDROID_MANIFEST_FILE);
 
@@ -161,7 +169,6 @@ public class ApkServiceImpl implements ApkService, FileService {
         } finally {
 
             try {
-                androlibResources.close();
                 extFile.close();
             } catch (IOException ex) {
                 logError(ex);
@@ -197,9 +204,9 @@ public class ApkServiceImpl implements ApkService, FileService {
 
             apkFile.setIconName(
                     StringUtils.substringAfterLast(androidManifest.getManifest().getApplication().getAttrAndroidIcon(),
-                            ":"));
+                            "@"));
 
-            apkFile.setAppName(getApkAppNameByPackageAndAndroidLabelAndResourceTable(apkFile.getAppPackage(),
+            apkFile.setAppName(getApkAppNameByPackageAndAndroidLabelAndResourceTable(
                     androidManifest.getManifest().getApplication().getAttrAndroidLabel(), resTable));
 
         } catch (ParserConfigurationException | SAXException | IOException ex) {
@@ -211,11 +218,13 @@ public class ApkServiceImpl implements ApkService, FileService {
 
     }
 
-    private String getApkAppNameByPackageAndAndroidLabelAndResourceTable(final String appPackage,
-            final String androidLabel, final ResTable resTable)
+    private String getApkAppNameByPackageAndAndroidLabelAndResourceTable(final String androidLabel,
+            final ResTable resTable)
             throws AndrolibException {
 
-        String valueName = StringUtils.substringAfter(androidLabel, appPackage + ":string/");
+        logger.info("Android Label: {}", androidLabel);
+
+        String valueName = StringUtils.substringAfter(androidLabel, "@string/");
 
         final Iterator<ResValuesFile> valuesFileIterator = resTable.getCurrentResPackage().listValuesFiles().iterator();
 
@@ -233,25 +242,30 @@ public class ApkServiceImpl implements ApkService, FileService {
                         return ((ResStringValue) resource.getValue()).encodeAsResXmlValue();
                     }
                 }
-                return TEMP_APK_FILE;
+                break;
             }
         }
 
-        return TEMP_APK_FILE;
+        return "";
     }
 
-    private String getBase64ApkIcon(final AndrolibResources androlibResources, final ResTable resTable,
+    private String getBase64ApkIcon(final ResourcesDecoder androlibResources, final ResTable resTable,
             final ExtFile apkFile, final File outDir,
             final String iconName) {
 
         try {
             final String iconsDirName = "icons";
+
             final String[] iconTokens = iconName.split("/");
 
-            Duo<ResFileDecoder, AXmlResourceParser> duo = androlibResources.getResFileDecoder();
+            if (iconTokens.length < 2) {
+                logger.error("Unable to tokenize icon name.");
+                return null;
+            }
+
+            Duo<ResFileDecoder, AXmlResourceParser> duo = getResFileDecoder();
 
             ResFileDecoder fileDecoder = duo.m1;
-            ResAttrDecoder attrDecoder = duo.m2.getAttrDecoder();
 
             Directory in = apkFile.getDirectory();
             Directory out = new FileDirectory(outDir);
@@ -262,7 +276,6 @@ public class ApkServiceImpl implements ApkService, FileService {
                 ResPackage resPackage = iteratorPackage.next();
 
                 Iterator<ResResource> iteratorResource = resPackage.listFiles().iterator();
-                attrDecoder.setCurrentPackage(resPackage);
 
                 while (iteratorResource.hasNext()) {
                     ResResource resource = iteratorResource.next();
@@ -271,7 +284,7 @@ public class ApkServiceImpl implements ApkService, FileService {
                     if (!resourceFilePath.contains("anydpi") && resourceFilePath.startsWith(iconTokens[0])
                             && resourceFilePath.endsWith(iconTokens[1])) {
                         logger.info("Extracted icon: {}", resource.getFilePath());
-                        fileDecoder.decode(resource, in, out, androlibResources.mResFileMapping);
+                        fileDecoder.decode(resource, in, out, androlibResources.getResFileMapping());
                     }
                 }
             }
@@ -287,6 +300,27 @@ public class ApkServiceImpl implements ApkService, FileService {
         }
 
         return null;
+    }
+
+    private Duo<ResFileDecoder, AXmlResourceParser> getResFileDecoder() {
+        ResStreamDecoderContainer decoders = new ResStreamDecoderContainer();
+        decoders.setDecoder("raw", new ResRawStreamDecoder());
+        decoders.setDecoder("9patch", new Res9patchStreamDecoder());
+
+        AXmlResourceParser axmlParser = new AXmlResourceParser();
+        axmlParser.setAttrDecoder(new ResAttrDecoder());
+        decoders.setDecoder("xml", new XmlPullStreamDecoder(axmlParser, getResXmlSerializer()));
+
+        return new Duo<>(new ResFileDecoder(decoders), axmlParser);
+    }
+
+    private ExtMXSerializer getResXmlSerializer() {
+        ExtMXSerializer serial = new ExtMXSerializer();
+        serial.setProperty(ExtXmlSerializer.PROPERTY_SERIALIZER_INDENTATION, "    ");
+        serial.setProperty(ExtXmlSerializer.PROPERTY_SERIALIZER_LINE_SEPARATOR, System.getProperty("line.separator"));
+        serial.setProperty(ExtXmlSerializer.PROPERTY_DEFAULT_ENCODING, "utf-8");
+        serial.setDisabledAttrEscape(true);
+        return serial;
     }
 
     private void moveApkFile(final File tempFile, final ApkFile apkFile) {
