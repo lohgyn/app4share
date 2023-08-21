@@ -20,7 +20,7 @@
 		<java-awt.version>4.4.0</java-awt.version>
 		<springdoc-openapi.version>2.1.0</springdoc-openapi.version>
 		<dd-plist.version>1.27</dd-plist.version>
-		<zxing.version>3.5.1</zxing.version>
+		<zxing.version>3.5.2</zxing.version>
 		<tika.version>2.8.0</tika.version>
 	</properties>
 
