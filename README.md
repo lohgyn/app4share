@@ -27,3 +27,10 @@ mvn spring-boot:run
 ii) Once it is started, it would start listening on port 9999 with contenxt path `/app4share`
 
 iii) Open any internet browser and enter url http://localhost:9999/app4share
+
+## 4. Default Credential
+
+The default credential is:
+
+Username: adminuser
+Password: adminuser1$

@@ -16,7 +16,9 @@ public interface IpaService {
 
     public void deleteIpaFile(final String fileUuid);
 
-    public void uploadIpaFile(final MultipartFile multipartFile) throws InvalidIPAFileException;
+    public IpaFile uploadIpaFile(final MultipartFile multipartFile) throws InvalidIPAFileException;
+
+    public void housekeepOldIpaFile(final String bundleId);
 
     public void uploadIpaReleaseNotes(final MultipartFile multipartFile, final String fileUuid);
 

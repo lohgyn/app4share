@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -127,7 +128,11 @@ public class ApkController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String uploadApkFile(@RequestParam("file") MultipartFile multipartFile) {
 
-        apkService.uploadApkFile(multipartFile);
+        ApkFile apkFile = apkService.uploadApkFile(multipartFile);
+
+        if (StringUtils.hasLength(apkFile.getAppPackage())) {
+            apkService.housekeepOldApkFile(apkFile.getAppPackage());
+        }
 
         return REDIRECT_TO_APK_PAGE;
     }

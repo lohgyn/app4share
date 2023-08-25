@@ -114,7 +114,7 @@ public class IpaServiceImpl implements IpaService, FileService {
     }
 
     @Override
-    public void uploadIpaFile(final MultipartFile multipartFile) throws InvalidIPAFileException {
+    public IpaFile uploadIpaFile(final MultipartFile multipartFile) throws InvalidIPAFileException {
 
         File tempFile = transferMultipartFileTo(multipartFile,
                 getFilePath(UUID.randomUUID().toString(), TEMP_IPA_FILE));
@@ -124,11 +124,13 @@ public class IpaServiceImpl implements IpaService, FileService {
         }
 
         IpaFile ipaFile = getIpaInfo(tempFile);
-        ipaFileRepository.save(ipaFile);
+        ipaFile = ipaFileRepository.save(ipaFile);
 
         moveIpaFile(tempFile, ipaFile);
         createPlistFile(ipaFile);
         deleteFile(tempFile.toPath());
+
+        return ipaFile;
 
     }
 
@@ -146,6 +148,17 @@ public class IpaServiceImpl implements IpaService, FileService {
 
         if (plistFile == null) {
             throw new InvalidIPAFileException("Unable to create .plist file for " + ipaFile.getBundleExecutable());
+        }
+
+    }
+
+    @Override
+    public void housekeepOldIpaFile(final String bundleId) {
+        final List<IpaFile> ipaFiles = ipaFileRepository.findAllByBundleIdOrderByIdDesc(bundleId);
+
+        if (ipaFiles.size() > 5) {
+            ipaFiles.subList(5, ipaFiles.size())
+                    .forEach(ipaFile -> deleteIpaFile(ipaFile.getFileUuid()));
         }
 
     }

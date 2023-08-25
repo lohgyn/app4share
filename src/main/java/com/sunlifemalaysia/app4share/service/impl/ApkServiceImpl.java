@@ -119,7 +119,7 @@ public class ApkServiceImpl implements ApkService, FileService {
     }
 
     @Override
-    public void uploadApkFile(final MultipartFile multipartFile) throws InvalidApkFileException {
+    public ApkFile uploadApkFile(final MultipartFile multipartFile) throws InvalidApkFileException {
 
         String apkFolder = UUID.randomUUID().toString();
 
@@ -131,9 +131,11 @@ public class ApkServiceImpl implements ApkService, FileService {
 
         ApkFile apkFile = decodeApkFile(tempApkFile);
 
-        apkFileRepository.save(apkFile);
+        apkFile = apkFileRepository.save(apkFile);
 
         moveApkFile(tempApkFile, apkFile);
+
+        return apkFile;
 
     }
 
@@ -331,6 +333,16 @@ public class ApkServiceImpl implements ApkService, FileService {
             throw new InvalidApkFileException("Unable to move .apk file: " + tempFile.getName());
         }
 
+    }
+
+    @Override
+    public void housekeepOldApkFile(final String appPackage) {
+        final List<ApkFile> apkFiles = apkFileRepository.findAllByAppPackageOrderByIdDesc(appPackage);
+
+        if (apkFiles.size() > 5) {
+            apkFiles.subList(5, apkFiles.size())
+                    .forEach(apkFile -> deleteApkFile(apkFile.getFileUuid()));
+        }
     }
 
     @Override

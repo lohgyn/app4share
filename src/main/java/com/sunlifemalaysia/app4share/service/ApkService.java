@@ -16,7 +16,9 @@ public interface ApkService {
 
     public void deleteApkFile(final String fileUuid);
 
-    public void uploadApkFile(final MultipartFile multipartFile) throws InvalidApkFileException;
+    public ApkFile uploadApkFile(final MultipartFile multipartFile) throws InvalidApkFileException;
+
+    public void housekeepOldApkFile(final String appPackage);
 
     public void uploadApkReleaseNotes(final MultipartFile multipartFile, final String fileUuid);
 
